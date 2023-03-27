@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <servlet>
+        <servlet-name>dbWorker</servlet-name>
+        <servlet-class>ru.ap.servlets.DbWorker</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dbWorker</servlet-name>
+        <url-pattern>/db</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ReadServlet</servlet-name>
+        <servlet-class>ru.ap.servlets.ReadServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReadServlet</servlet-name>
+        <url-pattern>/db/persons/*</url-pattern>
+        <url-pattern>/db/persons_cards</url-pattern>
+        <url-pattern>/db/banks/*</url-pattern>
+        <url-pattern>/db/cards/*</url-pattern>
+        <url-pattern>/db/banks_persons</url-pattern>
+        <url-pattern>/db/banks_cards</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CreateServlet</servlet-name>
+        <servlet-class>ru.ap.servlets.CreateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreateServlet</servlet-name>
+        <url-pattern>/db/add</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UpdateServlet</servlet-name>
+        <servlet-class>ru.ap.servlets.UpdateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateServlet</servlet-name>
+        <url-pattern>/db/update</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>DeleteServlet</servlet-name>
+        <servlet-class>ru.ap.servlets.DeleteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteServlet</servlet-name>
+        <url-pattern>/db/delete</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>
+            index.jsp
+        </welcome-file>
+    </welcome-file-list>
+</web-app>
