@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 public class ReadServlet extends HttpServlet {
 
@@ -22,17 +21,17 @@ public class ReadServlet extends HttpServlet {
         QueryDispatcher queryDispatcher = new QueryDispatcher();
         if (split.length == 3) {
             System.out.println("length 3, " + split[2]);
-            writer.println(queryDispatcher.dispatchTables(split[2]));
+            writer.println(queryDispatcher.dispatchGetTables(split[2]));
         } else if (split.length == 4) {
             long id = -1;
             System.out.println("length 4, id = " + split[3]);
             System.out.println("path = " + split[2]);
             try {
                 id = Long.parseLong(split[3]);
+                writer.println(queryDispatcher.dispatchGetById(split[2], id));
             } catch (NumberFormatException e) {
-
+                writer.println(queryDispatcher.dispatchGetByName(split[2], split[3]));
             }
-            writer.println(queryDispatcher.dispatchById(split[2], id));
         }
     }
 }

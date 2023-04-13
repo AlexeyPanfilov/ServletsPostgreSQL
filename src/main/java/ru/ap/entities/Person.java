@@ -1,5 +1,7 @@
 package ru.ap.entities;
 
+import java.util.List;
+
 public class Person {
 
     private long id;
@@ -8,12 +10,20 @@ public class Person {
 
     private String lastName;
 
+    private List<Bank> banks;
+
+    private List<Card> cards;
+
     public Person() {
     }
 
     public Person(String name, String lastName) {
         this.name = name;
         this.lastName = lastName;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getId() {
@@ -34,6 +44,26 @@ public class Person {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return name + " " + lastName;
+    }
+
+    public List<Bank> getBanks() {
+        return banks;
+    }
+
+    public void setBanks(List<Bank> banks) {
+        this.banks = banks;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<Card> cards) {
+        this.cards = cards;
     }
 
     @Override

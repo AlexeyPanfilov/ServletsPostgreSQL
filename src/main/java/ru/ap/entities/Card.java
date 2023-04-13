@@ -6,17 +6,21 @@ public class Card {
 
     private String cardNumber;
 
-    private long bantId;
+    private long bankId;
 
     private long personId;
 
     public Card() {
     }
 
-    public Card(String cardNumber, long bantId, long personId) {
+    public Card(String cardNumber, long bankId, long personId) {
         this.cardNumber = cardNumber;
-        this.bantId = bantId;
+        this.bankId = bankId;
         this.personId = personId;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getId() {
@@ -31,12 +35,12 @@ public class Card {
         this.cardNumber = cardNumber;
     }
 
-    public long getBantId() {
-        return bantId;
+    public long getBankId() {
+        return bankId;
     }
 
-    public void setBantId(long bantId) {
-        this.bantId = bantId;
+    public void setBankId(long bankId) {
+        this.bankId = bankId;
     }
 
     public long getPersonId() {

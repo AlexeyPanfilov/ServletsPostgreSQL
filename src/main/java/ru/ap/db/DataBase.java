@@ -40,6 +40,10 @@ public class DataBase {
         }
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
     public ResultSet getResultSet() throws SQLException {
         return statement.getResultSet();
     }

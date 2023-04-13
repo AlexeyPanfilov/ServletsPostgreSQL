@@ -1,4 +1,4 @@
-package ru.ap.service;
+package ru.ap.repository;
 
 import ru.ap.db.DataBase;
 
@@ -8,6 +8,25 @@ import java.sql.SQLException;
 public class BanksPersonsReqConversion {
 
     private DataBase dataBase = new DataBase();
+
+    public boolean createTable() {
+        dataBase.connect();
+        try {
+            return dataBase.getStatement().execute(
+                    "CREATE TABLE IF NOT EXISTS banks_persons (" +
+                            "bank_id BIGINT, " +
+                            "person_id BIGINT," +
+                            "foreign key (bank_id) REFERENCES banks(id) ON DELETE CASCADE," +
+                            "foreign key (person_id) REFERENCES persons(id) ON DELETE CASCADE" +
+                            ");"
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            dataBase.disconnect();
+        }
+        return false;
+    }
 
     public String banksPersonsList() {
         StringBuilder sb = new StringBuilder();

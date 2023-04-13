@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>panf.company</groupId>
-    <artifactId>SimpleTomcatServer</artifactId>
+    <artifactId>Servlet_Rest_SQL</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -44,7 +44,7 @@
     </dependencies>
 
     <build>
-        <finalName>SimpleTomcatServer</finalName>
+        <finalName>Servlet_Rest_SQL</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
