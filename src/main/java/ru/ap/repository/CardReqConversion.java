@@ -11,7 +11,11 @@ import java.util.Map;
 
 public class CardReqConversion {
 
-    private DataBase dataBase = new DataBase();
+    private DataBase dataBase;
+
+    public CardReqConversion(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
 
     public boolean createTable() {
         dataBase.connect();
@@ -102,6 +106,21 @@ public class CardReqConversion {
             } catch (SQLException ex) {
                 e.printStackTrace();
             }
+            e.printStackTrace();
+        } finally {
+            dataBase.disconnect();
+        }
+        return false;
+    }
+
+    public boolean deleteById(long id) {
+        dataBase.connect();
+        try {
+            PreparedStatement preparedStatement = dataBase.getPreparedStatement("DELETE FROM cards WHERE id=?;");
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             dataBase.disconnect();

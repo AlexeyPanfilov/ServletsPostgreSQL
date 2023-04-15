@@ -13,7 +13,11 @@ import java.util.List;
 
 public class PersonReqConversion {
 
-    private DataBase dataBase = new DataBase();
+    private DataBase dataBase;
+
+    public PersonReqConversion(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
 
     public boolean createTable() {
         dataBase.connect();

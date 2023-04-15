@@ -7,7 +7,11 @@ import java.sql.SQLException;
 
 public class BanksPersonsReqConversion {
 
-    private DataBase dataBase = new DataBase();
+    private DataBase dataBase;
+
+    public BanksPersonsReqConversion(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
 
     public boolean createTable() {
         dataBase.connect();

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 public class DbWorker extends HttpServlet {
 
@@ -16,10 +17,10 @@ public class DbWorker extends HttpServlet {
 //        String queryString = req.getQueryString();
 //        System.out.println("queryString = " + queryString);
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String sql = req.getQueryString();
-        System.out.println(sql);
-    }
+//
+//    @Override
+//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        String sql = req.getQueryString();
+//        System.out.println(sql);
+//    }
 }

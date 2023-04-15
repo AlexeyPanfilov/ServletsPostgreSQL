@@ -1,5 +1,6 @@
 package ru.ap.service;
 
+import ru.ap.db.DataBase;
 import ru.ap.entities.Bank;
 import ru.ap.entities.Card;
 import ru.ap.entities.Person;
@@ -10,10 +11,23 @@ import ru.ap.repository.PersonReqConversion;
 
 public class QueryDispatcher {
 
-    BankReqConversion bankReqConversion = new BankReqConversion();
-    CardReqConversion cardReqConversion = new CardReqConversion();
-    PersonReqConversion personReqConversion = new PersonReqConversion();
-    BanksPersonsReqConversion banksPersonsReqConversion = new BanksPersonsReqConversion();
+    DataBase dataBase;
+    BankReqConversion bankReqConversion;
+    CardReqConversion cardReqConversion;
+    PersonReqConversion personReqConversion;
+    BanksPersonsReqConversion banksPersonsReqConversion;
+
+    public QueryDispatcher(String dbClassName, String dbUrl, String dbUser, String dbPassword) {
+        this.dataBase = new DataBase(dbClassName, dbUrl, dbUser, dbPassword);
+        bankReqConversion = new BankReqConversion(dataBase);
+        cardReqConversion = new CardReqConversion(dataBase);
+        personReqConversion = new PersonReqConversion(dataBase);
+        banksPersonsReqConversion = new BanksPersonsReqConversion(dataBase);
+    }
+
+    public DataBase getDataBase() {
+        return this.dataBase;
+    }
 
     public String dispatchGetTables(String query) {
         switch (query) {
@@ -143,6 +157,8 @@ public class QueryDispatcher {
                 return bankReqConversion.deleteById(id);
             case "persons":
                 return personReqConversion.deleteById(id);
+            case "cards":
+                return cardReqConversion.deleteById(id);
             default:
                 return false;
         }

@@ -1,9 +1,11 @@
 package ru.ap.repository;
 
 import ru.ap.db.DataBase;
+import ru.ap.db.DbAccessBuilder;
 import ru.ap.entities.Bank;
 import ru.ap.entities.Card;
 import ru.ap.entities.Person;
+import ru.ap.db.DbAccess;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +14,11 @@ import java.util.*;
 
 public class BankReqConversion {
 
-    private final DataBase dataBase = new DataBase();
+    private final DataBase dataBase;
+
+    public BankReqConversion(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
 
     public boolean createTable() {
         dataBase.connect();

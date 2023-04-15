@@ -5,23 +5,35 @@ import java.sql.*;
 public class DataBase {
 
     private static Connection connection;
-
     private Statement statement;
+    private String className;
+    private String url;
+    private String user;
+    private String password;
+
+
+    public DataBase() {
+    }
+
+    public DataBase(String className, String url, String user, String password) {
+        this.className = className;
+        this.url = url;
+        this.user = user;
+        this.password = password;
+        try {
+            Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void connect() {
         try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/?currentSchema=aston3",
-                    "postgres",
-                    "admin"
-            );
+            connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
             System.out.println("Connected to DB");
         } catch (SQLException e) {
             System.out.println("Unable to connect database");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

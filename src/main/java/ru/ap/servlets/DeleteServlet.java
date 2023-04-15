@@ -24,7 +24,12 @@ public class DeleteServlet extends HttpServlet {
         System.out.println("id = " + idStr);
         System.out.println("table = " + table);
         long id = Long.parseLong(idStr);
-        QueryDispatcher queryDispatcher = new QueryDispatcher();
+        QueryDispatcher queryDispatcher = new QueryDispatcher(
+                DbAccessData.DB_CLASS_NAME,
+                DbAccessData.DB_URL,
+                DbAccessData.DB_USER,
+                DbAccessData.DB_PASSWORD
+        );
         System.out.println(queryDispatcher.dispatchDeleteById(table, id));
         doGet(req, resp);
     }
