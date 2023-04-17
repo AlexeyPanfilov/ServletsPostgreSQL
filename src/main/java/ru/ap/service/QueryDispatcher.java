@@ -53,7 +53,7 @@ public class QueryDispatcher {
                                 .append(", ")
                                 .append(personReqConversion.getById(cardReqConversion.cardsList().get(id).getPersonId()).getFullName())
                                 .append("\n"));
-                return sb.toString();
+                return sb.toString().trim();
             default:
                 return "Invalid path";
         }

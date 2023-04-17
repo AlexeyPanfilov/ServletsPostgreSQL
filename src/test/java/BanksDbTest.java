@@ -130,7 +130,7 @@ public class BanksDbTest {
 
     @Test
     @DisplayName("Update test")
-    void updateBank() {
+    void updateById() {
         String  id = "1";
         String newTitle = "NewBank";
         String[] query = {"banks", id, newTitle};
@@ -142,7 +142,7 @@ public class BanksDbTest {
 
     @Test
     @DisplayName("Delete test")
-    void deleteBank() {
+    void deleteById() {
         long id = 3;
         String table = "banks";
         String titleOfDeletingBank = queryDispatcher.dispatchGetById(table, id);

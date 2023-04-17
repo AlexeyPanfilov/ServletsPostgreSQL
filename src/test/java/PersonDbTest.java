@@ -64,6 +64,22 @@ public class PersonDbTest {
         }
     }
 
+    @AfterAll
+    public static void disconnect() {
+        try {
+            statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            connection.close();
+            System.out.println("Disconnected");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Test
     @DisplayName("Add test")
     void add() {
@@ -83,13 +99,6 @@ public class PersonDbTest {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            connection.close();
-            System.out.println("Disconnected");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -116,13 +125,6 @@ public class PersonDbTest {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            connection.close();
-            System.out.println("Disconnected");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -150,7 +152,7 @@ public class PersonDbTest {
 
     @Test
     @DisplayName("Get list of persons")
-    void getListOfBanks() {
+    void getListOfPersons() {
         StringBuilder sb = new StringBuilder();
         try (ResultSet rs = statement.executeQuery("SELECT * FROM persons;")) {
             while (rs.next()) {
@@ -161,13 +163,6 @@ public class PersonDbTest {
                         .append(rs.getString(3))
                         .append("\n");
             }
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            connection.close();
-            System.out.println("Disconnected");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -177,7 +172,7 @@ public class PersonDbTest {
 
     @Test
     @DisplayName("Get persons with cards list")
-    void getClients() {
+    void getCards() {
         StringBuilder sb = new StringBuilder();
         try (ResultSet rs = statement.executeQuery(
                 "SELECT p.name, p.lastname, c.number FROM cards c INNER JOIN persons p ON c.person_id = p.id;"
@@ -190,13 +185,6 @@ public class PersonDbTest {
                         .append(rs.getString(3))
                         .append("\n");
             }
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            connection.close();
-            System.out.println("Disconnected");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -206,7 +194,7 @@ public class PersonDbTest {
 
     @Test
     @DisplayName("Update test")
-    void updateBank() {
+    void updateById() {
         String id = "1";
         String newName = "Rocco";
         String newLastName = "Siffredi";
@@ -220,15 +208,13 @@ public class PersonDbTest {
 
     @Test
     @DisplayName("Delete test")
-    void deleteBank() {
+    void deleteById() {
         long id = 3;
         String table = "persons";
         String fullNameOfDeletingPerson = queryDispatcher.dispatchGetById(table, id);
-        System.out.println(fullNameOfDeletingPerson);
         Assertions.assertTrue(queryDispatcher.dispatchDeleteById(table, id));
         Assertions.assertNotEquals(
                 fullNameOfDeletingPerson, queryDispatcher.dispatchGetById(table, id)
         );
-
     }
 }
