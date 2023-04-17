@@ -234,16 +234,18 @@ public class PersonReqConversion {
         return false;
     }
 
-    public boolean updatePerson(Person person) {
+    public boolean updatePerson(Person person, String newName, String newLastName) {
         dataBase.connect();
         try {
             PreparedStatement preparedStatement = dataBase.getPreparedStatement(
                     "UPDATE persons SET name = ?, lastname = ? WHERE id = ?;"
             );
-            preparedStatement.setString(1, person.getName());
-            preparedStatement.setString(2, person.getLastName());
+            preparedStatement.setString(1, newName);
+            preparedStatement.setString(2, newLastName);
             preparedStatement.setLong(3, person.getId());
             preparedStatement.executeUpdate();
+            person.setName(newName);
+            person.setLastName(newLastName);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

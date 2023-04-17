@@ -36,7 +36,7 @@ public class UpdateServlet extends HttpServlet {
                 DbAccessData.DB_USER,
                 DbAccessData.DB_PASSWORD
         );
-        System.out.println(queryDispatcher.dispatchUpdateById(query));
+        queryDispatcher.dispatchUpdateById(query);
         doGet(req, resp);
     }
 }

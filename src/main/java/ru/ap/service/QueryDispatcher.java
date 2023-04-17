@@ -143,9 +143,9 @@ public class QueryDispatcher {
         long id = Long.parseLong(query[1]);
         switch (query[0]) {
             case "banks":
-                return bankReqConversion.updateBank(bankReqConversion.getById(id));
+                return bankReqConversion.updateBank(bankReqConversion.getById(id), query[2]);
             case "persons":
-                return personReqConversion.updatePerson(personReqConversion.getById(id));
+                return personReqConversion.updatePerson(personReqConversion.getById(id), query[2], query[3]);
             default:
                 return false;
         }

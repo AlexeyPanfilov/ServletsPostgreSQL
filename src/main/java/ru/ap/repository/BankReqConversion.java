@@ -231,14 +231,15 @@ public class BankReqConversion {
         return false;
     }
 
-    public boolean updateBank(Bank bank) {
+    public boolean updateBank(Bank bank, String title) {
         dataBase.connect();
         String sql = "UPDATE banks SET title = ? WHERE id = ?;";
         try {
             PreparedStatement preparedStatement = dataBase.getPreparedStatement(sql);
-            preparedStatement.setString(1, bank.getTitle());
+            preparedStatement.setString(1, title);
             preparedStatement.setLong(2, bank.getId());
             preparedStatement.executeUpdate();
+            bank.setTitle(title);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
