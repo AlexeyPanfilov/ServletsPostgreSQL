@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonReqConversion {
+public class PersonRepository {
 
     private DataBase dataBase;
 
-    public PersonReqConversion(DataBase dataBase) {
+    public PersonRepository(DataBase dataBase) {
         this.dataBase = dataBase;
     }
 

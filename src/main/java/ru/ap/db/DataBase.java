@@ -11,10 +11,6 @@ public class DataBase {
     private String user;
     private String password;
 
-
-    public DataBase() {
-    }
-
     public DataBase(String className, String url, String user, String password) {
         this.className = className;
         this.url = url;
@@ -31,7 +27,6 @@ public class DataBase {
         try {
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
-//            System.out.println("Connected to DB");
         } catch (SQLException e) {
             System.out.println("Unable to connect database");
             e.printStackTrace();
@@ -46,7 +41,6 @@ public class DataBase {
         }
         try {
             connection.close();
-//            System.out.println("Disconnected");
         } catch (SQLException e) {
             e.printStackTrace();
         }

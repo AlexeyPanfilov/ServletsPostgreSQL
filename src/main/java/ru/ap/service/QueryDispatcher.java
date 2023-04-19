@@ -4,24 +4,24 @@ import ru.ap.db.DataBase;
 import ru.ap.entities.Bank;
 import ru.ap.entities.Card;
 import ru.ap.entities.Person;
-import ru.ap.repository.BankReqConversion;
+import ru.ap.repository.BankRepository;
 import ru.ap.repository.BanksPersonsReqConversion;
-import ru.ap.repository.CardReqConversion;
-import ru.ap.repository.PersonReqConversion;
+import ru.ap.repository.CardRepository;
+import ru.ap.repository.PersonRepository;
 
 public class QueryDispatcher {
 
     DataBase dataBase;
-    BankReqConversion bankReqConversion;
-    CardReqConversion cardReqConversion;
-    PersonReqConversion personReqConversion;
+    BankRepository bankRepository;
+    CardRepository cardRepository;
+    PersonRepository personRepository;
     BanksPersonsReqConversion banksPersonsReqConversion;
 
     public QueryDispatcher(String dbClassName, String dbUrl, String dbUser, String dbPassword) {
         this.dataBase = new DataBase(dbClassName, dbUrl, dbUser, dbPassword);
-        bankReqConversion = new BankReqConversion(dataBase);
-        cardReqConversion = new CardReqConversion(dataBase);
-        personReqConversion = new PersonReqConversion(dataBase);
+        bankRepository = new BankRepository(dataBase);
+        cardRepository = new CardRepository(dataBase);
+        personRepository = new PersonRepository(dataBase);
         banksPersonsReqConversion = new BanksPersonsReqConversion(dataBase);
     }
 
@@ -34,24 +34,24 @@ public class QueryDispatcher {
             case "banks_persons":
                 return banksPersonsReqConversion.banksPersonsList();
             case "banks":
-                return bankReqConversion.banksList();
+                return bankRepository.getBanksList();
             case "banks_cards":
-                return bankReqConversion.cardsList();
+                return bankRepository.cardsList();
             case "persons":
-                return personReqConversion.personsList();
+                return personRepository.personsList();
             case "persons_cards":
-                return personReqConversion.cardsList();
+                return personRepository.cardsList();
             case "cards":
                 StringBuilder sb = new StringBuilder();
-                cardReqConversion.cardsList().keySet()
+                cardRepository.cardsList().keySet()
                         .forEach(id -> sb
                                 .append(id)
                                 .append(". ")
-                                .append(cardReqConversion.cardsList().get(id).getCardNumber())
+                                .append(cardRepository.cardsList().get(id).getCardNumber())
                                 .append(", ")
-                                .append(bankReqConversion.getById(cardReqConversion.cardsList().get(id).getBankId()).getTitle())
+                                .append(bankRepository.getById(cardRepository.cardsList().get(id).getBankId()).getTitle())
                                 .append(", ")
-                                .append(personReqConversion.getById(cardReqConversion.cardsList().get(id).getPersonId()).getFullName())
+                                .append(personRepository.getById(cardRepository.cardsList().get(id).getPersonId()).getFullName())
                                 .append("\n"));
                 return sb.toString().trim();
             default:
@@ -62,18 +62,18 @@ public class QueryDispatcher {
     public String dispatchGetById(String table, long id) {
         switch (table) {
             case "banks":
-                return bankReqConversion.getById(id).toString();
+                return bankRepository.getById(id).toString();
             case "banks_cards":
-                return bankReqConversion.cardsList();
+                return bankRepository.cardsList();
             case "persons":
-                return personReqConversion.getById(id).toString();
+                return personRepository.getById(id).toString();
             case "cards":
-                Card card = cardReqConversion.getCardInfoById(id);
+                Card card = cardRepository.getCardInfoById(id);
                 return card.getCardNumber() +
                         ", " +
-                        bankReqConversion.getById(card.getBankId()) +
+                        bankRepository.getById(card.getBankId()) +
                         ", " +
-                        personReqConversion.getById(card.getPersonId());
+                        personRepository.getById(card.getPersonId());
             default:
                 return "Invalid path";
         }
@@ -82,9 +82,9 @@ public class QueryDispatcher {
     public String dispatchGetByName(String table, String text) {
         switch (table) {
             case "banks":
-                if (bankReqConversion.getByTitle(text) != null) {
+                if (bankRepository.getByTitle(text) != null) {
                     StringBuilder sb = new StringBuilder();
-                    Bank bank = bankReqConversion.getByTitle(text);
+                    Bank bank = bankRepository.getByTitle(text);
                     sb.append("Clients:").append("\n");
                     bank.getPersons().forEach(person -> sb.append(person.getFullName()).append("\n"));
                     sb.append("Cards:").append("\n");
@@ -94,14 +94,14 @@ public class QueryDispatcher {
                     return "no matches found";
                 }
             case "banks_cards":
-                return bankReqConversion.cardsList();
+                return bankRepository.cardsList();
             case "persons":
                 String[] split = text.split("_");
                 String name = split[0];
                 String lastName = split[1];
-                if (personReqConversion.getByName(name, lastName) != null) {
+                if (personRepository.getByName(name, lastName) != null) {
                     StringBuilder sb = new StringBuilder();
-                    Person person = personReqConversion.getByName(name, lastName);
+                    Person person = personRepository.getByName(name, lastName);
                     sb.append("Banks:").append("\n");
                     person.getBanks().forEach(bank -> sb.append(bank.getTitle()).append("\n"));
                     sb.append("Cards:").append("\n");
@@ -121,17 +121,17 @@ public class QueryDispatcher {
         switch (query[0]) {
             case "banks":
                 Bank bank = new Bank(query[1]);
-                return bankReqConversion.addBank(bank);
+                return bankRepository.addNewEntity(bank);
             case "persons":
                 Person person = new Person(query[1], query[2]);
-                return personReqConversion.addPerson(person);
+                return personRepository.addPerson(person);
             case "cards":
                 Card card = new Card(query[1], Long.parseLong(query[2]), Long.parseLong(query[3]));
-                return cardReqConversion.addCard(card);
+                return cardRepository.addCard(card);
             case "create":
-                bankReqConversion.createTable();
-                personReqConversion.createTable();
-                cardReqConversion.createTable();
+                bankRepository.createTable();
+                personRepository.createTable();
+                cardRepository.createTable();
                 banksPersonsReqConversion.createTable();
                 return true;
             default:
@@ -143,9 +143,9 @@ public class QueryDispatcher {
         long id = Long.parseLong(query[1]);
         switch (query[0]) {
             case "banks":
-                return bankReqConversion.updateBank(bankReqConversion.getById(id), query[2]);
+                return bankRepository.updateById(id, query[2]);
             case "persons":
-                return personReqConversion.updatePerson(personReqConversion.getById(id), query[2], query[3]);
+                return personRepository.updatePerson(personRepository.getById(id), query[2], query[3]);
             default:
                 return false;
         }
@@ -154,11 +154,11 @@ public class QueryDispatcher {
     public boolean dispatchDeleteById(String table, long id) {
         switch (table) {
             case "banks":
-                return bankReqConversion.deleteById(id);
+                return bankRepository.deleteById(id);
             case "persons":
-                return personReqConversion.deleteById(id);
+                return personRepository.deleteById(id);
             case "cards":
-                return cardReqConversion.deleteById(id);
+                return cardRepository.deleteById(id);
             default:
                 return false;
         }

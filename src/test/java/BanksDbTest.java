@@ -3,12 +3,18 @@ import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.ap.service.QueryDispatcher;
+import ru.ap.db.DataBase;
+import ru.ap.entities.Bank;
+import ru.ap.entities.Card;
+import ru.ap.entities.Person;
+import ru.ap.repository.BankRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Testcontainers
@@ -23,7 +29,7 @@ public class BanksDbTest {
 
     private static Connection connection;
     private static Statement statement;
-    private static QueryDispatcher queryDispatcher;
+    private static BankRepository bankRepository;
 
     @BeforeAll
     public static void connect() {
@@ -37,20 +43,16 @@ public class BanksDbTest {
                     postgreSQLContainer.getPassword()
             );
             statement = connection.createStatement();
+            bankRepository = new BankRepository(new DataBase(
+                    "org.postgresql.Driver",
+                    postgreSQLContainer.getJdbcUrl(),
+                    postgreSQLContainer.getUsername(),
+                    postgreSQLContainer.getPassword()
+            ));
+
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    @BeforeAll
-    public static void getQueryDispatcher() {
-        System.out.println("GetQueryDispatcher called");
-        queryDispatcher = new QueryDispatcher(
-                "org.postgresql.Driver",
-                postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword()
-        );
     }
 
     @BeforeEach
@@ -67,30 +69,23 @@ public class BanksDbTest {
     @Test
     @DisplayName("Add test")
     void add() {
-        String[] query = {"banks", "MyOwnBank"};
-        Assertions.assertTrue(queryDispatcher.dispatchAdd(query));
+        Bank bank = new Bank("MyOwnBank");
+        Assertions.assertTrue(bankRepository.addNewEntity(bank));
     }
 
     @Test
     @DisplayName("Get by id test")
     void getById() {
-        String table = "banks";
         long id = 1;
-        Assertions.assertEquals("1. Sber", queryDispatcher.dispatchGetById(table, id));
+        Assertions.assertEquals("1. Sber", bankRepository.getById(id).toString());
     }
 
     @Test
     @DisplayName("Get by title test (clients and cards lists)")
     void getByTitle() {
-        String table = "banks";
         String title = "VTB";
-        String result = "Clients:\n" +
-                "Mika Hakkinen\n" +
-                "John Smith\n" +
-                "Cards:\n" +
-                "2222 5555\n" +
-                "2222 1234\n";
-        Assertions.assertEquals(result, queryDispatcher.dispatchGetByName(table, title));
+        String result = "2. VTB";
+        Assertions.assertEquals(result, bankRepository.getByTitle(title).toString());
     }
 
     @Test
@@ -100,55 +95,61 @@ public class BanksDbTest {
                 "2 VTB\n" +
                 "3 Alfa\n" +
                 "4 GPB";
-        Assertions.assertEquals(result, queryDispatcher.dispatchGetTables("banks"));
+        Assertions.assertEquals(result, bankRepository.getBanksList());
     }
 
     @Test
-    @DisplayName("Get banks with cards list")
+    @DisplayName("Show clients of bank")
     void getClients() {
-        String result = "VTB 2222 5555\n" +
-                "VTB 2222 1234\n" +
-                "GPB 4444 5555\n" +
-                "GPB 4444 1212\n" +
-                "GPB 4444 5633\n" +
-                "Alfa 3333 1234\n" +
-                "Alfa 3333 9876\n" +
-                "Sber 1111 5678\n" +
-                "Sber 1111 1234\n" +
-                "Sber 1111 2367\n";
-        Assertions.assertEquals(result, queryDispatcher.dispatchGetTables("banks_cards"));
+        long id = 2;
+        List<Person> clients = new ArrayList<>();
+        Person p1 = new Person("John", "Smith");
+        p1.setId(1);
+        Person p2 = new Person("Mika", "Hakkinen");
+        p2.setId(4);
+        clients.add(p1);
+        clients.add(p2);
+        Assertions.assertEquals(clients.toString(), bankRepository.getClients(id).toString());
+    }
+
+    @Test
+    @DisplayName("Show list of cards")
+    void getCards() {
+        long id = 2;
+        List<Card> clients = new ArrayList<>();
+        Card c1 = new Card("2222 5555", 2, 4);
+        c1.setId(4);
+        Card c2 = new Card("2222 1234", 2, 1);
+        c2.setId(5);
+        clients.add(c1);
+        clients.add(c2);
+        Assertions.assertEquals(clients.toString(), bankRepository.getCards(id).toString());
     }
 
     @Test
     @DisplayName("Add test")
     void addBank() {
-        String[] query = {"banks", "UBS"};
         long id = 5;
-        Assertions.assertTrue(queryDispatcher.dispatchAdd(query));
-        Assertions.assertEquals(id + ". " + query[1], queryDispatcher.dispatchGetById(query[0], id));
+        Bank bank = new Bank("UBS");
+        Assertions.assertTrue(bankRepository.addNewEntity(bank));
+        Assertions.assertEquals(id + ". " + "UBS", bankRepository.getById(id).toString());
     }
 
     @Test
     @DisplayName("Update test")
     void updateById() {
-        String  id = "1";
+        long id = 1;
         String newTitle = "NewBank";
-        String[] query = {"banks", id, newTitle};
-        Assertions.assertTrue(queryDispatcher.dispatchUpdateById(query));
-        Assertions.assertEquals(
-                Long.parseLong(id) + ". " + query[2], queryDispatcher.dispatchGetById(query[0], Long.parseLong(id))
-        );
+        Assertions.assertTrue(bankRepository.updateById(id, newTitle));
+        Assertions.assertEquals(id + ". " + newTitle, bankRepository.getById(id).toString());
     }
 
     @Test
     @DisplayName("Delete test")
     void deleteById() {
         long id = 3;
-        String table = "banks";
-        String titleOfDeletingBank = queryDispatcher.dispatchGetById(table, id);
-        Assertions.assertTrue(queryDispatcher.dispatchDeleteById(table, id));
-        Assertions.assertNotEquals(
-                id + ". " + titleOfDeletingBank, queryDispatcher.dispatchGetById(table, id)
-        );
+        String titleOfDeletingBank = bankRepository.getById(id).toString();
+        Assertions.assertTrue(bankRepository.deleteById(id));
+        Assertions.assertNotEquals(id + ". " + titleOfDeletingBank, bankRepository.getById(id).toString());
     }
 }

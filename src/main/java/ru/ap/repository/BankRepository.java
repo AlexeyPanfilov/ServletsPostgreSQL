@@ -1,25 +1,24 @@
 package ru.ap.repository;
 
 import ru.ap.db.DataBase;
-import ru.ap.db.DbAccessBuilder;
 import ru.ap.entities.Bank;
 import ru.ap.entities.Card;
 import ru.ap.entities.Person;
-import ru.ap.db.DbAccess;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class BankReqConversion {
+public class BankRepository {
 
     private final DataBase dataBase;
 
-    public BankReqConversion(DataBase dataBase) {
+    public BankRepository(DataBase dataBase) {
         this.dataBase = dataBase;
     }
 
+    // todo Delete this
     public boolean createTable() {
         dataBase.connect();
         try {
@@ -34,7 +33,7 @@ public class BankReqConversion {
         return false;
     }
 
-    public String banksList() {
+    public String getBanksList() {
         StringBuilder sb = new StringBuilder();
         dataBase.connect();
         try (ResultSet rs = dataBase.getStatement().executeQuery("SELECT * FROM banks;")) {
@@ -49,9 +48,9 @@ public class BankReqConversion {
         return sb.toString().trim();
     }
 
-    private List<Card> getCards(Bank bank) {
+    public List<Card> getCards(long id) {
+        Bank bank = this.getById(id);
         List<Card> cards = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
         dataBase.connect();
         try {
             PreparedStatement preparedStatement = dataBase.getPreparedStatement(
@@ -75,13 +74,12 @@ public class BankReqConversion {
         } finally {
             dataBase.disconnect();
         }
-        cards.forEach(card -> sb.append(card.getCardNumber()).append("\n"));
         return cards;
     }
 
-    private List<Person> getClients(Bank bank) {
+    public List<Person> getClients(long id) {
+        Bank bank = getById(id);
         List<Person> clients = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
         dataBase.connect();
         try {
             dataBase.getConnection().setAutoCommit(false);
@@ -118,11 +116,11 @@ public class BankReqConversion {
         } finally {
             dataBase.disconnect();
         }
-        clients.forEach(client -> sb.append(client.getFullName()).append("\n"));
         return clients;
 
     }
 
+    // todo Delete this
     public String cardsList() {
         Map<String, List<Card>> banksCards = new HashMap<>();
         dataBase.connect();
@@ -207,15 +205,15 @@ public class BankReqConversion {
             Bank bank = new Bank();
             bank.setId(id);
             bank.setTitle(title);
-            bank.setCards(getCards(bank));
-            bank.setPersons(getClients(bank));
+            bank.setCards(getCards(id));
+            bank.setPersons(getClients(id));
             return bank;
         } else {
             return null;
         }
     }
 
-    public boolean addBank(Bank bank) {
+    public boolean addNewEntity(Bank bank) {
         dataBase.connect();
         String sql = "INSERT INTO banks (title) VALUES (?);";
         try {
@@ -231,7 +229,8 @@ public class BankReqConversion {
         return false;
     }
 
-    public boolean updateBank(Bank bank, String title) {
+    public boolean updateById(Long id, String title) {
+        Bank bank = getById(id);
         dataBase.connect();
         String sql = "UPDATE banks SET title = ? WHERE id = ?;";
         try {

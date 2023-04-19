@@ -13,10 +13,15 @@ import java.util.stream.Collectors;
 
 public class PrepareTables {
     public static void main(String[] args) {
-//        DataBase dataBase = new DataBase();
-//        dataBase.connect();
-//        prepareData(dataBase);
-//        dataBase.disconnect();
+        DataBase dataBase = new DataBase(
+                "org.postgresql.Driver",
+                "jdbc:postgresql://localhost:5432/?currentSchema=aston3",
+                "postgres",
+                "admin"
+        );
+        dataBase.connect();
+        prepareData(dataBase);
+        dataBase.disconnect();
     }
 
     static void prepareData(DataBase dataBase) {

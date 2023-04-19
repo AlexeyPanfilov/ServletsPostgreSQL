@@ -50,6 +50,19 @@
         <url-pattern>/db/delete</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>bankServlet</servlet-name>
+        <servlet-class>ru.ap.servlets.BankServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>bankServlet</servlet-name>
+        <url-pattern>/db/bank/*</url-pattern>
+<!--        <url-pattern>/db/bank/show/*</url-pattern>-->
+<!--        <url-pattern>/db/bank/delete/*</url-pattern>-->
+<!--        <url-pattern>/db/bank/update/*</url-pattern>-->
+<!--        <url-pattern>/db/bank/add/*</url-pattern>-->
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>
             index.jsp

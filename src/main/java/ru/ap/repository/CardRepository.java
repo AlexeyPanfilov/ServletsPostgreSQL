@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CardReqConversion {
+public class CardRepository {
 
     private DataBase dataBase;
 
-    public CardReqConversion(DataBase dataBase) {
+    public CardRepository(DataBase dataBase) {
         this.dataBase = dataBase;
     }
 
