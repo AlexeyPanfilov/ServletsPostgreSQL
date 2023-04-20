@@ -38,7 +38,7 @@ public class QueryDispatcher {
             case "banks_cards":
                 return bankRepository.cardsList();
             case "persons":
-                return personRepository.personsList();
+                return personRepository.getPersonsList();
             case "persons_cards":
                 return personRepository.cardsList();
             case "cards":
@@ -51,7 +51,7 @@ public class QueryDispatcher {
                                 .append(", ")
                                 .append(bankRepository.getById(cardRepository.cardsList().get(id).getBankId()).getTitle())
                                 .append(", ")
-                                .append(personRepository.getById(cardRepository.cardsList().get(id).getPersonId()).getFullName())
+                                .append(personRepository.getById(cardRepository.cardsList().get(id).getOwnerId()).getFullName())
                                 .append("\n"));
                 return sb.toString().trim();
             default:
@@ -73,7 +73,7 @@ public class QueryDispatcher {
                         ", " +
                         bankRepository.getById(card.getBankId()) +
                         ", " +
-                        personRepository.getById(card.getPersonId());
+                        personRepository.getById(card.getOwnerId());
             default:
                 return "Invalid path";
         }
@@ -99,9 +99,9 @@ public class QueryDispatcher {
                 String[] split = text.split("_");
                 String name = split[0];
                 String lastName = split[1];
-                if (personRepository.getByName(name, lastName) != null) {
+                if (personRepository.getByFullName(name, lastName) != null) {
                     StringBuilder sb = new StringBuilder();
-                    Person person = personRepository.getByName(name, lastName);
+                    Person person = personRepository.getByFullName(name, lastName);
                     sb.append("Banks:").append("\n");
                     person.getBanks().forEach(bank -> sb.append(bank.getTitle()).append("\n"));
                     sb.append("Cards:").append("\n");
@@ -124,7 +124,7 @@ public class QueryDispatcher {
                 return bankRepository.addNewEntity(bank);
             case "persons":
                 Person person = new Person(query[1], query[2]);
-                return personRepository.addPerson(person);
+                return personRepository.addNewEntity(person);
             case "cards":
                 Card card = new Card(query[1], Long.parseLong(query[2]), Long.parseLong(query[3]));
                 return cardRepository.addCard(card);
@@ -145,7 +145,7 @@ public class QueryDispatcher {
             case "banks":
                 return bankRepository.updateById(id, query[2]);
             case "persons":
-                return personRepository.updatePerson(personRepository.getById(id), query[2], query[3]);
+//                return personRepository.updateById(personRepository.getById(id), query[2], query[3]);
             default:
                 return false;
         }

@@ -8,15 +8,15 @@ public class Card {
 
     private long bankId;
 
-    private long personId;
+    private long ownerId;
 
     public Card() {
     }
 
-    public Card(String cardNumber, long bankId, long personId) {
+    public Card(String cardNumber, long bankId, long ownerId) {
         this.cardNumber = cardNumber;
         this.bankId = bankId;
-        this.personId = personId;
+        this.ownerId = ownerId;
     }
 
     public void setId(long id) {
@@ -43,12 +43,12 @@ public class Card {
         this.bankId = bankId;
     }
 
-    public long getPersonId() {
-        return personId;
+    public long getOwnerId() {
+        return ownerId;
     }
 
-    public void setPersonId(long personId) {
-        this.personId = personId;
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
     }
 
     @Override

@@ -17,6 +17,7 @@ public class CardRepository {
         this.dataBase = dataBase;
     }
 
+    // todo delete later
     public boolean createTable() {
         dataBase.connect();
         try {
@@ -34,6 +35,7 @@ public class CardRepository {
         return false;
     }
 
+    // todo delete later
     public Map<Long, Card> cardsList() {
         Map<Long, Card> cards = new HashMap<>();
         StringBuilder sb = new StringBuilder();
@@ -67,7 +69,7 @@ public class CardRepository {
                 while (rs.next()) {
                     card.setCardNumber(rs.getString(1));
                     card.setBankId(rs.getLong(2));
-                    card.setPersonId(rs.getLong(3));
+                    card.setOwnerId(rs.getLong(3));
                 }
             }
         } catch (SQLException e) {
@@ -87,15 +89,15 @@ public class CardRepository {
             PreparedStatement bankIdCheckStatement = dataBase.getPreparedStatement(bankIdCheck);
             bankIdCheckStatement.setLong(1, card.getBankId());
             PreparedStatement personIdCheckStatement = dataBase.getPreparedStatement(personIdCheck);
-            personIdCheckStatement.setLong(1, card.getPersonId());
+            personIdCheckStatement.setLong(1, card.getOwnerId());
             PreparedStatement preparedStatement = dataBase.getPreparedStatement(insertCard);
             preparedStatement.setString(1, card.getCardNumber());
             preparedStatement.setLong(2, card.getBankId());
-            preparedStatement.setLong(3, card.getPersonId());
+            preparedStatement.setLong(3, card.getOwnerId());
             preparedStatement.executeUpdate();
             PreparedStatement preparedStatement2 = dataBase.getPreparedStatement(insertBanksPersons);
             preparedStatement2.setLong(1, card.getBankId());
-            preparedStatement2.setLong(2, card.getPersonId());
+            preparedStatement2.setLong(2, card.getOwnerId());
             preparedStatement2.executeUpdate();
             dataBase.getConnection().commit();
             dataBase.getConnection().setAutoCommit(true);

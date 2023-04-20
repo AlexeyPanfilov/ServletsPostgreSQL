@@ -48,7 +48,7 @@ public class BankRepository {
         return sb.toString().trim();
     }
 
-    public List<Card> getCards(long id) {
+    public List<Card> getCardsById(long id) {
         Bank bank = this.getById(id);
         List<Card> cards = new ArrayList<>();
         dataBase.connect();
@@ -77,7 +77,7 @@ public class BankRepository {
         return cards;
     }
 
-    public List<Person> getClients(long id) {
+    public List<Person> getClientsById(long id) {
         Bank bank = getById(id);
         List<Person> clients = new ArrayList<>();
         dataBase.connect();
@@ -205,8 +205,8 @@ public class BankRepository {
             Bank bank = new Bank();
             bank.setId(id);
             bank.setTitle(title);
-            bank.setCards(getCards(id));
-            bank.setPersons(getClients(id));
+            bank.setCards(getCardsById(id));
+            bank.setPersons(getClientsById(id));
             return bank;
         } else {
             return null;

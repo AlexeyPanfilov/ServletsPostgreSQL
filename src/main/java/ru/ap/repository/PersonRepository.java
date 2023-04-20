@@ -35,7 +35,7 @@ public class PersonRepository {
         return false;
     }
 
-    public String personsList() {
+    public String getPersonsList() {
         StringBuilder sb = new StringBuilder();
         dataBase.connect();
         try (ResultSet rs = dataBase.getStatement().executeQuery("SELECT * FROM persons;")) {
@@ -55,9 +55,9 @@ public class PersonRepository {
         return sb.toString().trim();
     }
 
-    private List<Card> getCards(Person person) {
+    public List<Card> getCardsById(long id) {
+        Person person = this.getById(id);
         List<Card> cards = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
         dataBase.connect();
         try {
             PreparedStatement preparedStatement = dataBase.getPreparedStatement(
@@ -81,13 +81,12 @@ public class PersonRepository {
         } finally {
             dataBase.disconnect();
         }
-        cards.forEach(card -> sb.append(card.getCardNumber()).append("\n"));
         return cards;
     }
 
-    private List<Bank> getBanks(Person person) {
+    public List<Bank> getBanksById(long id) {
+        Person person = this.getById(id);
         List<Bank> banks = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
         dataBase.connect();
         try {
             dataBase.getConnection().setAutoCommit(false);
@@ -122,11 +121,11 @@ public class PersonRepository {
         } finally {
             dataBase.disconnect();
         }
-        banks.forEach(bank -> sb.append(bank.getTitle()).append("\n"));
         return banks;
 
     }
 
+    // todo delete later
     public String cardsList() {
         StringBuilder sb = new StringBuilder();
         dataBase.connect();
@@ -180,7 +179,7 @@ public class PersonRepository {
         return person;
     }
 
-    public Person getByName(String name, String lastName) {
+    public Person getByFullName(String name, String lastName) {
         long id = 0;
         dataBase.connect();
         try {
@@ -208,15 +207,15 @@ public class PersonRepository {
             person.setId(id);
             person.setName(name);
             person.setLastName(lastName);
-            person.setBanks(getBanks(person));
-            person.setCards(getCards(person));
+            person.setBanks(getBanksById(id));
+            person.setCards(getCardsById(id));
             return person;
         } else {
             return null;
         }
     }
 
-    public boolean addPerson(Person person) {
+    public boolean addNewEntity(Person person) {
         dataBase.connect();
         try {
             PreparedStatement preparedStatement = dataBase.getPreparedStatement(
@@ -234,7 +233,8 @@ public class PersonRepository {
         return false;
     }
 
-    public boolean updatePerson(Person person, String newName, String newLastName) {
+    public boolean updateById(long id, String newName, String newLastName) {
+        Person person = this.getById(id);
         dataBase.connect();
         try {
             PreparedStatement preparedStatement = dataBase.getPreparedStatement(

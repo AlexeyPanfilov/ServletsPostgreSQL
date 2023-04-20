@@ -109,7 +109,7 @@ public class BanksDbTest {
         p2.setId(4);
         clients.add(p1);
         clients.add(p2);
-        Assertions.assertEquals(clients.toString(), bankRepository.getClients(id).toString());
+        Assertions.assertEquals(clients.toString(), bankRepository.getClientsById(id).toString());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class BanksDbTest {
         c2.setId(5);
         clients.add(c1);
         clients.add(c2);
-        Assertions.assertEquals(clients.toString(), bankRepository.getCards(id).toString());
+        Assertions.assertEquals(clients.toString(), bankRepository.getCardsById(id).toString());
     }
 
     @Test
