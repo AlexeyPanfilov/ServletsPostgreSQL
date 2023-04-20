@@ -19,22 +19,6 @@ public class PersonRepository {
         this.dataBase = dataBase;
     }
 
-    public boolean createTable() {
-        dataBase.connect();
-        try {
-            return dataBase.getStatement().execute(
-                    "CREATE TABLE IF NOT EXISTS persons (" +
-                            "id BIGSERIAL primary key, name VARCHAR(50), lastname VARCHAR(50)" +
-                            ");"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dataBase.disconnect();
-        }
-        return false;
-    }
-
     public String getPersonsList() {
         StringBuilder sb = new StringBuilder();
         dataBase.connect();
@@ -123,30 +107,6 @@ public class PersonRepository {
         }
         return banks;
 
-    }
-
-    // todo delete later
-    public String cardsList() {
-        StringBuilder sb = new StringBuilder();
-        dataBase.connect();
-        try (ResultSet rs = dataBase.getStatement().executeQuery(
-                "SELECT p.name, p.lastname, cp.number AS card " +
-                        "FROM persons p FULL JOIN cards cp ON cp.person_id = p.id;"
-        )) {
-            while (rs.next()) {
-                sb.append(rs.getString(1))
-                        .append(" ")
-                        .append(rs.getString(2))
-                        .append(" ")
-                        .append(rs.getString(3))
-                        .append("\n");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dataBase.disconnect();
-        }
-        return sb.toString().trim();
     }
 
     public Person getById(long id) {

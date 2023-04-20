@@ -13,12 +13,6 @@ import java.util.Map;
 
 public class BankServlet extends HttpServlet {
 
-    // Примеры обрабатываемых запросов
-    // localhost:8080/db/bank/show/1
-    // requestURI - /db/bank/show/1
-    // localhost:8080/db/bank/delete/1
-    // localhost:8080/db/bank/update/1
-    // localhost:8080/db/bank/add/1
     private BankService bankService;
 
     @Override
@@ -29,9 +23,6 @@ public class BankServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // todo delete garbage
-        String requestURI = req.getRequestURI();
-//        String[] split = requestURI.split("/");
         String validGetRequests = "Valid requests:\n" +
                 "/show\n" +
                 "/show/?id=X\n" +
@@ -41,13 +32,6 @@ public class BankServlet extends HttpServlet {
         PrintWriter writer = resp.getWriter();
         String queryString = req.getQueryString();
         String pathInfo = req.getPathInfo().split("/")[1];
-        System.out.println("GET");
-        System.out.println("requestURI: " + requestURI); // полный адрес после порта - /db/bank/show/1
-        System.out.println("pathinfo: " + pathInfo); // то что после /db/bank (/show/)
-        System.out.println("servletPath: " + req.getServletPath()); // /db/bank/show/
-        System.out.println("contextPath: " + req.getContextPath());
-        System.out.println("queryString: " + req.getQueryString());
-        System.out.println("parameter: " + req.getParameter("id")); // /db/bank/show/?id=5 (выдаст 5)
         if (pathInfo.equals("show")) {
             if (queryString == null) {
                 writer.write(bankService.getAllBanks());
@@ -154,7 +138,6 @@ public class BankServlet extends HttpServlet {
                 "/delete/?id=X\n";
         String queryString = req.getQueryString();
         String pathInfo = req.getPathInfo().split("/")[1];
-        System.out.println("DELETE");
         if (queryString == null) {
             writer.write("List of banks:\n");
             writer.write(bankService.getAllBanks());

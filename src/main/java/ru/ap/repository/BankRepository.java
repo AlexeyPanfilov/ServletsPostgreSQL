@@ -18,21 +18,6 @@ public class BankRepository {
         this.dataBase = dataBase;
     }
 
-    // todo Delete this
-    public boolean createTable() {
-        dataBase.connect();
-        try {
-            return dataBase.getStatement().execute(
-                    "CREATE TABLE IF NOT EXISTS banks (id BIGSERIAL primary key, title VARCHAR(50));"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dataBase.disconnect();
-        }
-        return false;
-    }
-
     public String getBanksList() {
         StringBuilder sb = new StringBuilder();
         dataBase.connect();
@@ -117,44 +102,6 @@ public class BankRepository {
             dataBase.disconnect();
         }
         return clients;
-
-    }
-
-    // todo Delete this
-    public String cardsList() {
-        Map<String, List<Card>> banksCards = new HashMap<>();
-        dataBase.connect();
-        try (ResultSet rs = dataBase.getStatement().executeQuery(
-                "SELECT b.title, cb.number AS card FROM banks b FULL JOIN cards cb ON cb.bank_id = b.id;")
-        ) {
-            while (rs.next()) {
-                String bankTitle = rs.getString(1);
-                Bank bank = getByTitle(bankTitle);
-                String cardNumber = rs.getString(2);
-                if (!banksCards.containsKey(bankTitle)) {
-                    List<Card> cardNumbers = new ArrayList<>();
-                    Card card = new Card();
-                    card.setCardNumber(cardNumber);
-                    cardNumbers.add(card);
-                    bank.setCards(cardNumbers);
-                    banksCards.put(bankTitle, cardNumbers);
-                } else {
-                    List<Card> cardNumbers = banksCards.get(bankTitle);
-                    Card card = new Card();
-                    card.setCardNumber(cardNumber);
-                    cardNumbers.add(card);
-                    banksCards.put(bankTitle, cardNumbers);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dataBase.disconnect();
-        }
-        StringBuilder sb = new StringBuilder();
-            banksCards.keySet().forEach(k -> banksCards.get(k)
-                            .forEach(card -> sb.append(k).append(" ").append(card.getCardNumber()).append("\n")));
-        return sb.toString();
     }
 
     public Bank getById(long id) {

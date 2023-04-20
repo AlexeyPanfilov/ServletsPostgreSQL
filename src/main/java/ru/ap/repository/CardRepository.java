@@ -6,8 +6,6 @@ import ru.ap.entities.Card;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CardRepository {
 
@@ -15,46 +13,6 @@ public class CardRepository {
 
     public CardRepository(DataBase dataBase) {
         this.dataBase = dataBase;
-    }
-
-    // todo delete later
-    public boolean createTable() {
-        dataBase.connect();
-        try {
-            return dataBase.getStatement().execute(
-                            "CREATE TABLE cards (" +
-                                    "id BIGSERIAL primary key,number VARCHAR(9)," +
-                                    "bank_id BIGINT REFERENCES banks (id) ON DELETE CASCADE, " +
-                                    "person_id BIGINT REFERENCES persons (id) ON DELETE CASCADE)"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dataBase.disconnect();
-        }
-        return false;
-    }
-
-    // todo delete later
-    public Map<Long, Card> cardsList() {
-        Map<Long, Card> cards = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
-        dataBase.connect();
-        try (
-        ResultSet rs1 = dataBase.getStatement().executeQuery("SELECT * FROM cards")) {
-            while (rs1.next()) {
-                long cardId = rs1.getLong(1);
-                String cardNumber = rs1.getString(2);
-                long bankId = rs1.getLong(3);
-                long personId = rs1.getLong(4);
-                cards.put(cardId, new Card(cardNumber, bankId, personId));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            dataBase.disconnect();
-        }
-        return cards;
     }
 
     public Card getCardInfoById(long id) {
@@ -67,6 +25,7 @@ public class CardRepository {
             preparedStatement.setLong(1, id);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
+                    card.setId(id);
                     card.setCardNumber(rs.getString(1));
                     card.setBankId(rs.getLong(2));
                     card.setOwnerId(rs.getLong(3));
