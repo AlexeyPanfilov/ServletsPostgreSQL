@@ -5,52 +5,6 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>dbWorker</servlet-name>
-        <servlet-class>ru.ap.servlets.DbWorker</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>dbWorker</servlet-name>
-        <url-pattern>/db</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>ReadServlet</servlet-name>
-        <servlet-class>ru.ap.servlets.ReadServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ReadServlet</servlet-name>
-        <url-pattern>/db/persons/*</url-pattern>
-        <url-pattern>/db/persons_cards</url-pattern>
-        <url-pattern>/db/banks/*</url-pattern>
-        <url-pattern>/db/cards/*</url-pattern>
-        <url-pattern>/db/banks_persons</url-pattern>
-        <url-pattern>/db/banks_cards</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>CreateServlet</servlet-name>
-        <servlet-class>ru.ap.servlets.CreateServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>CreateServlet</servlet-name>
-        <url-pattern>/db/add</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>UpdateServlet</servlet-name>
-        <servlet-class>ru.ap.servlets.UpdateServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UpdateServlet</servlet-name>
-        <url-pattern>/db/update</url-pattern>
-    </servlet-mapping>
-    <servlet>
-        <servlet-name>DeleteServlet</servlet-name>
-        <servlet-class>ru.ap.servlets.DeleteServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>DeleteServlet</servlet-name>
-        <url-pattern>/db/delete</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>bankServlet</servlet-name>
         <servlet-class>ru.ap.servlets.BankServlet</servlet-class>
     </servlet>

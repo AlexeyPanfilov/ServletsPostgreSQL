@@ -50,7 +50,7 @@ public class PersonServlet extends HttpServlet {
                             case "cards":
                                 writer.write(personService.getCardsById(id));
                                 break;
-                            case "clients":
+                            case "banks":
                                 writer.write(personService.getBanksById(id));
                                 break;
                             default:

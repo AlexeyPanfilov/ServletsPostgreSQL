@@ -33,7 +33,6 @@ public class BanksDbTest {
 
     @BeforeAll
     public static void connect() {
-        System.out.println("BeforeAll called");
         postgreSQLContainer.start();
         try {
             Class.forName("org.postgresql.Driver");
@@ -57,9 +56,8 @@ public class BanksDbTest {
 
     @BeforeEach
     public void prepareData() {
-        System.out.println("BeforeEach called");
         try {
-            String sql = Files.lines(Paths.get("create-tables.sql")).collect(Collectors.joining(" "));
+            String sql = Files.lines(Paths.get("create-and-fill-test-tables.sql")).collect(Collectors.joining(" "));
             statement.execute(sql);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
@@ -81,7 +79,7 @@ public class BanksDbTest {
     }
 
     @Test
-    @DisplayName("Get by title test (clients and cards lists)")
+    @DisplayName("Get by title test")
     void getByTitle() {
         String title = "VTB";
         String result = "2. VTB";

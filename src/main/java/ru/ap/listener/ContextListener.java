@@ -6,20 +6,18 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.Properties;
 
 @WebListener
 public class ContextListener implements ServletContextListener {
 
-    DataBase dataBase = null;
+    DataBase dataBase;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        final ServletContext servletContext = sce.getServletContext();
-
+        ServletContext servletContext = sce.getServletContext();
         try (InputStream inputStream = servletContext.getResourceAsStream("WEB-INF/resources/db.properties")) {
             Properties properties = new Properties();
             properties.load(inputStream);
@@ -34,27 +32,16 @@ public class ContextListener implements ServletContextListener {
         }
         servletContext.setAttribute("dataBase", dataBase);
 
-        createTables();
+        createTablesIfNotExists(servletContext);
     }
 
-    private void createTables() {
-        dataBase.connect();
-        try {
-            dataBase.getStatement().execute(
-                    "CREATE TABLE IF NOT EXISTS persons (" +
-                            "id BIGSERIAL primary key, name VARCHAR(50), lastname VARCHAR(50)" +
-                            ");"
-            );
-            dataBase.getStatement().execute(
-                    "CREATE TABLE IF NOT EXISTS banks (id BIGSERIAL primary key, title VARCHAR(50));"
-            );
-            dataBase.getStatement().execute(
-                    "CREATE TABLE IF NOT EXISTS cards (" +
-                            "id BIGSERIAL primary key,number VARCHAR(9)," +
-                            "bank_id BIGINT REFERENCES banks (id) ON DELETE CASCADE, " +
-                            "person_id BIGINT REFERENCES persons (id) ON DELETE CASCADE)"
-            );
-        } catch (SQLException e) {
+    private void createTablesIfNotExists(ServletContext servletContext) {
+        try (InputStream inputStream = servletContext.getResourceAsStream("WEB-INF/resources/create-tables.sql")) {
+            if (inputStream == null) return;
+            dataBase.connect();
+            String sql = new String(inputStream.readAllBytes());
+            dataBase.getStatement().execute(sql);
+        } catch (IOException | SQLException e) {
             e.printStackTrace();
         } finally {
             dataBase.disconnect();

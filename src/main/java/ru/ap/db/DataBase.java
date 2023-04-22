@@ -1,6 +1,10 @@
 package ru.ap.db;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
+import java.util.stream.Collectors;
 
 public class DataBase {
 
@@ -21,6 +25,8 @@ public class DataBase {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+//        createTablesIfNotExists();
     }
 
     public void connect() {
@@ -61,4 +67,15 @@ public class DataBase {
     public PreparedStatement getPreparedStatement(String value) throws SQLException {
         return connection.prepareStatement(value);
     }
+
+//    private void createTablesIfNotExists() {
+//        connect();
+//        try {
+//            String sql = Files.lines(Paths.get("create-and-fill-test-tables.sql")).collect(Collectors.joining(" "));
+//            statement.execute(sql);
+//        } catch (IOException | SQLException e) {
+//            e.printStackTrace();
+//        }
+//        disconnect();
+//    }
 }
